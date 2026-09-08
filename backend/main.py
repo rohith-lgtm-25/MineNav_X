@@ -161,13 +161,26 @@ def set_scenario(data: dict):
         engine.state.vehicle.speed = 10.0 # Force forward movement for TTC demonstration
     elif scenario == "VEHICLE_AHEAD":
         heading_rad = math.radians(90 - engine.state.vehicle.heading)
-        veh_x = engine.state.vehicle.x + 50 * math.cos(heading_rad)
-        veh_y = engine.state.vehicle.y + 50 * math.sin(heading_rad)
-        engine.state.environment.objects.append(DetectedObject(
-            id=f"haul_truck_{len(engine.state.environment.objects)}",
-            type="vehicle", x=veh_x, y=veh_y
-        ))
-        engine.state.environment.objects[-1].speed = 5.0
+        # Vehicle 1 — closer, 30 m ahead, slow
+        veh1_x = engine.state.vehicle.x + 30 * math.cos(heading_rad)
+        veh1_y = engine.state.vehicle.y + 30 * math.sin(heading_rad)
+        truck1 = DetectedObject(
+            id="haul_truck_1",
+            type="vehicle", x=veh1_x, y=veh1_y
+        )
+        truck1.speed = 3.0
+        truck1.heading = engine.state.vehicle.heading
+        engine.state.environment.objects.append(truck1)
+        # Vehicle 2 — farther, 60 m ahead, faster
+        veh2_x = engine.state.vehicle.x + 60 * math.cos(heading_rad)
+        veh2_y = engine.state.vehicle.y + 60 * math.sin(heading_rad)
+        truck2 = DetectedObject(
+            id="haul_truck_2",
+            type="vehicle", x=veh2_x, y=veh2_y
+        )
+        truck2.speed = 5.0
+        truck2.heading = engine.state.vehicle.heading
+        engine.state.environment.objects.append(truck2)
     elif scenario == "ROCK_OBSTACLE":
         heading_rad = math.radians(90 - engine.state.vehicle.heading)
         rx = engine.state.vehicle.x + 15 * math.cos(heading_rad)
