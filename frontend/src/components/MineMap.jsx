@@ -136,14 +136,34 @@ export default function MineMap({ telemetry, size = 500 }) {
       ctx.beginPath(); ctx.arc(px, py, 16, 0, Math.PI * 2);
       ctx.fillStyle = grad; ctx.fill();
 
-      // Object dot
-      ctx.beginPath();
-      ctx.arc(px, py, 6, 0, Math.PI * 2);
-      ctx.fillStyle = color;
-      ctx.fill();
-      ctx.strokeStyle = '#fff';
-      ctx.lineWidth = 1;
-      ctx.stroke();
+      if (obj.type === 'vehicle') {
+        // Directional arrow — points in the object's absolute heading
+        const objHeadingRad = ((90 - (obj.heading ?? vehicle.heading)) * Math.PI) / 180;
+        ctx.save();
+        ctx.translate(px, py);
+        ctx.rotate(-objHeadingRad + Math.PI / 2);
+        ctx.beginPath();
+        ctx.moveTo(0, -11);   // tip
+        ctx.lineTo(-7, 8);    // bottom-left
+        ctx.lineTo(0, 4);     // inner notch
+        ctx.lineTo(7, 8);     // bottom-right
+        ctx.closePath();
+        ctx.fillStyle = color;
+        ctx.fill();
+        ctx.strokeStyle = '#fff';
+        ctx.lineWidth = 1;
+        ctx.stroke();
+        ctx.restore();
+      } else {
+        // Dot for person, rock, unknown
+        ctx.beginPath();
+        ctx.arc(px, py, 6, 0, Math.PI * 2);
+        ctx.fillStyle = color;
+        ctx.fill();
+        ctx.strokeStyle = '#fff';
+        ctx.lineWidth = 1;
+        ctx.stroke();
+      }
 
       // Label
       ctx.fillStyle = color;

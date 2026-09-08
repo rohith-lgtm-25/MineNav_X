@@ -62,7 +62,8 @@ class SimulatedRgbAdapter(BaseSensorAdapter):
                     angle=angle + angle_noise,
                     confidence=conf,
                     x=state.vehicle.x + (dist+dist_noise)*math.cos(math.radians(90 - state.vehicle.heading + angle + angle_noise)),
-                    y=state.vehicle.y + (dist+dist_noise)*math.sin(math.radians(90 - state.vehicle.heading + angle + angle_noise))
+                    y=state.vehicle.y + (dist+dist_noise)*math.sin(math.radians(90 - state.vehicle.heading + angle + angle_noise)),
+                    heading=obj.heading
                 ))
         return data
 
@@ -92,7 +93,8 @@ class SimulatedThermalAdapter(BaseSensorAdapter):
                         angle=angle + angle_noise,
                         confidence=conf,
                         x=state.vehicle.x + (dist+dist_noise)*math.cos(math.radians(90 - state.vehicle.heading + angle + angle_noise)),
-                        y=state.vehicle.y + (dist+dist_noise)*math.sin(math.radians(90 - state.vehicle.heading + angle + angle_noise))
+                        y=state.vehicle.y + (dist+dist_noise)*math.sin(math.radians(90 - state.vehicle.heading + angle + angle_noise)),
+                        heading=obj.heading
                     ))
         return data
 
@@ -122,7 +124,8 @@ class SimulatedRadarAdapter(BaseSensorAdapter):
                 angle=angle + angle_noise,
                 confidence=conf,
                 x=state.vehicle.x + (dist+dist_noise)*math.cos(math.radians(90 - state.vehicle.heading + angle + angle_noise)),
-                y=state.vehicle.y + (dist+dist_noise)*math.sin(math.radians(90 - state.vehicle.heading + angle + angle_noise))
+                y=state.vehicle.y + (dist+dist_noise)*math.sin(math.radians(90 - state.vehicle.heading + angle + angle_noise)),
+                heading=obj.heading
             ))
         return data
 
@@ -154,7 +157,8 @@ class SimulatedLidarAdapter(BaseSensorAdapter):
                     angle=angle + angle_noise,
                     confidence=conf,
                     x=state.vehicle.x + (dist+dist_noise)*math.cos(math.radians(90 - state.vehicle.heading + angle + angle_noise)),
-                    y=state.vehicle.y + (dist+dist_noise)*math.sin(math.radians(90 - state.vehicle.heading + angle + angle_noise))
+                    y=state.vehicle.y + (dist+dist_noise)*math.sin(math.radians(90 - state.vehicle.heading + angle + angle_noise)),
+                    heading=obj.heading
                 ))
         return data
 
@@ -181,7 +185,8 @@ class SimulatedUltrasonicAdapter(BaseSensorAdapter):
                 angle=angle,
                 confidence=conf,
                 x=state.vehicle.x + (dist+dist_noise)*math.cos(math.radians(90 - state.vehicle.heading + angle)),
-                y=state.vehicle.y + (dist+dist_noise)*math.sin(math.radians(90 - state.vehicle.heading + angle))
+                y=state.vehicle.y + (dist+dist_noise)*math.sin(math.radians(90 - state.vehicle.heading + angle)),
+                heading=obj.heading
             ))
         return data
 

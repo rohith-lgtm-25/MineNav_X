@@ -10,6 +10,7 @@ class SensorObject(BaseModel):
     confidence: float
     x: float = 0.0
     y: float = 0.0
+    heading: float = 0.0
 
 class SensorData(BaseModel):
     sensor: str
