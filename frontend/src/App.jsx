@@ -66,6 +66,7 @@ function App() {
   useEffect(() => {
     let isMounted = true;
     let reconnectTimeout = null;
+    let pollInterval = null;
     let reconnectDelay = 2000;
     let hasLoggedError = false;
 
