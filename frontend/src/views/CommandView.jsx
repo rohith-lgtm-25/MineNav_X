@@ -3,7 +3,7 @@ import MineMap from '../components/MineMap';
 import Controls from '../components/Controls';
 import SvgChart from '../components/SvgChart';
 
-export default function CommandView({ telemetry, history }) {
+export default function CommandView({ telemetry, history, onTelemetryUpdate, onDriveInput }) {
   if (!telemetry) return <div style={{ padding: '20px' }}>AWAITING TELEMETRY STREAM...</div>;
 
   const { state, safety } = telemetry;
@@ -169,7 +169,7 @@ export default function CommandView({ telemetry, history }) {
           </div>
           
           <div style={{ marginTop: 'auto' }}>
-            <Controls />
+            <Controls telemetry={telemetry} onTelemetryUpdate={onTelemetryUpdate} onDriveInput={onDriveInput} />
           </div>
         </div>
       </div>

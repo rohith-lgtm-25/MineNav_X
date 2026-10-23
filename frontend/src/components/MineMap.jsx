@@ -20,7 +20,7 @@ export default function MineMap({ telemetry, size = 500 }) {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
-    const { state, fused_objects, safety } = telemetry;
+    const { state, fused_objects } = telemetry;
     const { vehicle, environment } = state;
     const vis = environment.visibility;
     const headingRad = ((90 - vehicle.heading) * Math.PI) / 180;

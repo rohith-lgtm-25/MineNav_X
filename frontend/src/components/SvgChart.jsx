@@ -41,7 +41,7 @@ export default function SvgChart({
         <span style={{ textTransform: 'uppercase' }}>{label}</span>
         {currentValue !== null && <span className="mono" style={{ color }}>{currentValue}</span>}
       </div>
-      <div style={{ position: 'relative', height, width: '100%', background: 'var(--bg-base)', border: '1px solid var(--border-subtle)', borderRadius: '4px' }}>
+      <div style={{ position: 'relative', height, width: width || '100%', background: 'var(--bg-base)', border: '1px solid var(--border-subtle)', borderRadius: '4px' }}>
         <svg width="100%" height="100%" preserveAspectRatio="none" viewBox="0 0 100 100">
           {/* Grid lines */}
           <line x1="0" y1="25" x2="100" y2="25" stroke="rgba(255,255,255,0.05)" strokeWidth="1" />

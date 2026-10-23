@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { API_BASE_URL } from '../config/api';
 
 const ALL_SENSORS = [
   { id: 'lidar',      label: 'LiDAR',      desc: 'High-density 3D point cloud mapping (120m range)',   range: '120m',  hz: '20' },
@@ -10,25 +11,66 @@ const ALL_SENSORS = [
   { id: 'gnss',       label: 'GNSS',       desc: 'Global Navigation Satellite System — position',      range: 'Global', hz: '10' },
 ];
 
-export default function SensorsView({ telemetry }) {
+export default function SensorsView({ telemetry, onTelemetryUpdate }) {
+  const [togglingId, setTogglingId] = useState(null);
+  const [error, setError] = useState(null);
+
   if (!telemetry) return <div style={{ padding: '20px', color: 'var(--text-muted)' }}>AWAITING TELEMETRY STREAM...</div>;
 
   const { sensors, raw_sensors } = telemetry;
 
   const toggleSensor = async (id, currentStatus) => {
     const newStatus = currentStatus === 'online' ? 'offline' : 'online';
-    await fetch(`http://localhost:8000/api/sensors/${id}/status`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ status: newStatus })
-    });
+    setTogglingId(id);
+    setError(null);
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/sensors/${id}/status`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: newStatus })
+      });
+      if (!res.ok) {
+        throw new Error(`Server returned HTTP ${res.status}`);
+      }
+      const data = await res.json();
+      if (data.telemetry && onTelemetryUpdate) {
+        onTelemetryUpdate(data.telemetry);
+      }
+    } catch (err) {
+      console.error('Failed to toggle sensor status:', err);
+      setError(`Failed to update ${id.toUpperCase()}: ${err.message || 'Network error'}`);
+    } finally {
+      setTogglingId(null);
+    }
   };
 
   return (
     <div style={{ height: '100%', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', overflowY: 'auto' }}>
+      {error && (
+        <div style={{
+          gridColumn: '1 / -1',
+          background: 'rgba(239, 68, 68, 0.15)',
+          border: '1px solid var(--status-critical)',
+          color: 'var(--status-critical)',
+          padding: '8px 12px',
+          borderRadius: '4px',
+          fontSize: '11px',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center'
+        }}>
+          <span>⚠️ {error}</span>
+          <button
+            onClick={() => setError(null)}
+            style={{ background: 'transparent', border: 'none', color: 'var(--status-critical)', cursor: 'pointer', fontWeight: 'bold' }}
+          >✕</button>
+        </div>
+      )}
+
       {ALL_SENSORS.map(s => {
         const status = sensors?.[s.id] || (raw_sensors?.[s.id]?.status) || 'online';
         const isOnline = status === 'online';
+        const isToggling = togglingId === s.id;
         const sData = raw_sensors?.[s.id];
         const detCount = sData?.detections?.length || 0;
 
@@ -48,14 +90,16 @@ export default function SensorsView({ telemetry }) {
                 </span>
                 <button
                   onClick={() => toggleSensor(s.id, status)}
+                  disabled={isToggling}
                   style={{
                     background: isOnline ? 'rgba(239,68,68,0.1)' : 'rgba(16,185,129,0.1)',
                     border: `1px solid ${isOnline ? 'var(--status-offline)' : 'var(--status-safe)'}`,
                     color: isOnline ? 'var(--status-offline)' : 'var(--status-safe)',
-                    padding: '2px 8px', fontSize: '10px', fontWeight: '700', borderRadius: '4px', cursor: 'pointer'
+                    padding: '2px 8px', fontSize: '10px', fontWeight: '700', borderRadius: '4px', cursor: isToggling ? 'default' : 'pointer',
+                    opacity: isToggling ? 0.6 : 1
                   }}
                 >
-                  {isOnline ? 'FAIL' : 'RESTORE'}
+                  {isToggling ? '...' : (isOnline ? 'FAIL' : 'RESTORE')}
                 </button>
               </div>
             </div>
